@@ -9,8 +9,10 @@ ControlP5 cp5;
 
 CheckBox checkbox;
 
+Button clear, top, jungle, middle, adc, support, all;
+
 void setup() {
-  size(1500, 720);
+  size(1500, 900);
   
   champions = loadTable("champions.csv", "header");
   
@@ -29,6 +31,41 @@ void setup() {
   for(int i=0; i<champions.getRowCount(); i++){
     checkbox.addItem(champions.getRow(i).getString(0) + " ("+champions.getRow(i).getString(1) + ")", i);
   }
+  
+  clear = cp5.addButton("Clear")
+             .setPosition(1050,720)
+             .setWidth(80)
+             .updateSize();
+             
+  top = cp5.addButton("Top")
+             .setPosition(1150,720)
+             .setWidth(80)
+             .updateSize();
+  
+  jungle = cp5.addButton("Jungle")
+             .setPosition(1250,720)
+             .setWidth(80)
+             .updateSize();
+             
+  middle = cp5.addButton("Middle")
+             .setPosition(1350,720)
+             .setWidth(80)
+             .updateSize();
+             
+  adc = cp5.addButton("ADC")
+             .setPosition(1150,750)
+             .setWidth(80)
+             .updateSize();
+             
+  support = cp5.addButton("Support")
+             .setPosition(1250,750)
+             .setWidth(80)
+             .updateSize();
+             
+  all = cp5.addButton("All")
+             .setPosition(1050,750)
+             .setWidth(80)
+             .updateSize();
 }
 
 void draw() {
@@ -74,6 +111,15 @@ void draw() {
           }
         }
       } else if(champions.getRow(i).getString(1).equals("Jungle")){
+        fill(128,0,255,128);
+        if((inBounds() && checkMouseX(j)) || checkPos(j)){
+          fill(0,0,255,255);
+          fill(128,0,255,255);
+          if(checkPos(j)){
+            printInfo(j);
+          }
+        }
+      } else if(champions.getRow(i).getString(1).equals("Middle")){
         fill(0,0,255,128);
         if((inBounds() && checkMouseX(j)) || checkPos(j)){
           fill(0,0,255,255);
@@ -81,18 +127,10 @@ void draw() {
             printInfo(j);
           }
         }
-      } else if(champions.getRow(i).getString(1).equals("Middle")){
-        fill(128,0,255,128);
-        if((inBounds() && checkMouseX(j)) || checkPos(j)){
-          fill(128,0,255,255);
-          if(checkPos(j)){
-            printInfo(j);
-          }
-        }
       } else if(champions.getRow(i).getString(1).equals("ADC")){
-        fill(255,200,50,128);
+        fill(255,150,20,128);
         if((inBounds() && checkMouseX(j)) || checkPos(j)){
-          fill(255,200,50,255);
+          fill(255,150,20,255);
           if(checkPos(j)){
             printInfo(j);
           }
@@ -106,12 +144,10 @@ void draw() {
           }
         }
       }
-      //if((int)checkbox.getArrayValue()[i] == 1){
-        rect(x,(640-((champions.getRow(i).getFloat(2) - 35)*20)),
-            (915/totalDisplay)-2, ((champions.getRow(i).getFloat(2) - 35)*20));
-        x+=(915/totalDisplay);
+      rect(x,(640-((champions.getRow(i).getFloat(2) - 35)*20)),
+          (915/totalDisplay)-2, ((champions.getRow(i).getFloat(2) - 35)*20));
+      x+=(915/totalDisplay);
       }
-    //}
     selected.clear();
   }
   
@@ -123,9 +159,9 @@ void draw() {
   
 }
 
-void mouseClicked(){
+void mousePressed(){
   pos = mouseX;
-  if(pos > 915){
+  if(pos > 1000){
     pos = 0;
   }
 }
@@ -137,7 +173,7 @@ void printInfo(int i){
 }
 
 boolean inBounds(){
-  return mouseX>85 && mouseX<915;
+  return mouseX>85 && mouseX<1000;
 }
 
 boolean checkMouseX(int i){
@@ -154,5 +190,53 @@ void controlEvent(ControlEvent theEvent) {
       int n = (int)checkbox.getArrayValue()[i];
     }    
   }
+}
+
+public void Clear(int theValue) {
+  checkbox.deactivateAll();   
+}
+
+public void Top(int theValue) {
+  for(int i=0; i<champions.getRowCount(); i++){
+    if(champions.getRow(i).getString(1).equals("Top")){
+      checkbox.activate(i);
+    }
+  }
+}
+
+public void Jungle(int theValue) {
+  for(int i=0; i<champions.getRowCount(); i++){
+    if(champions.getRow(i).getString(1).equals("Jungle")){
+      checkbox.activate(i);
+    }
+  }
+}
+
+public void Middle(int theValue) {
+  for(int i=0; i<champions.getRowCount(); i++){
+    if(champions.getRow(i).getString(1).equals("Middle")){
+      checkbox.activate(i);
+    }
+  }   
+}
+
+public void ADC(int theValue) {
+  for(int i=0; i<champions.getRowCount(); i++){
+    if(champions.getRow(i).getString(1).equals("ADC")){
+      checkbox.activate(i);
+    }
+  }  
+}
+
+public void Support(int theValue) {
+  for(int i=0; i<champions.getRowCount(); i++){
+    if(champions.getRow(i).getString(1).equals("Support")){
+      checkbox.activate(i);
+    }
+  }   
+}
+
+public void All(int theValue) {
+  checkbox.activateAll();  
 }
 
