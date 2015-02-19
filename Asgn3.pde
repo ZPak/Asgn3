@@ -1,5 +1,7 @@
-Table champions, selection;
-int pos;
+Table champions;
+int pos, totalDisplay;
+
+ArrayList<Integer> selected = new ArrayList<Integer>();
 
 import controlP5.*;
 
@@ -24,7 +26,7 @@ void setup() {
                 .setSpacingRow(5)
                 ;
       
-  for(int i=1; i<champions.getRowCount(); i++){
+  for(int i=0; i<champions.getRowCount(); i++){
     checkbox.addItem(champions.getRow(i).getString(0) + " ("+champions.getRow(i).getString(1) + ")", i);
   }
 }
@@ -45,53 +47,72 @@ void draw() {
   line(80, 190, 1000, 190);
   line(80, 490, 1000, 490);
   
+  totalDisplay = 0;
+  for(int i=0;i<checkbox.getArrayValue().length;i++) {
+    if((int)checkbox.getArrayValue()[i] == 1){
+      totalDisplay++;
+    }
+  }
+  
+  for(int i=0; i<checkbox.getArrayValue().length; i++){
+      if((int)checkbox.getArrayValue()[i] == 1){
+        selected.add(i);
+      }
+  }
+  
   strokeWeight(1);
   int x = 85;
-  for(int i=0; i<champions.getRowCount(); i++){
-    if(champions.getRow(i).getString(1).equals("Top")){
-      fill(255,0,0,128);
-      if((mouseX>85 && checkMouseX(i)) || checkPos(i)){
-        fill(255,0,0,255);
-        if(checkPos(i)){
-          printInfo(i);
+  if(totalDisplay!=0){
+    for(int j=0; j<selected.size(); j++){
+      int i = selected.get(j);
+      if(champions.getRow(i).getString(1).equals("Top")){
+        fill(255,0,0,128);
+        if((inBounds() && checkMouseX(j)) || checkPos(j)){
+          fill(255,0,0,255);
+          if(checkPos(j)){
+            printInfo(j);
+          }
+        }
+      } else if(champions.getRow(i).getString(1).equals("Jungle")){
+        fill(0,0,255,128);
+        if((inBounds() && checkMouseX(j)) || checkPos(j)){
+          fill(0,0,255,255);
+          if(checkPos(j)){
+            printInfo(j);
+          }
+        }
+      } else if(champions.getRow(i).getString(1).equals("Middle")){
+        fill(128,0,255,128);
+        if((inBounds() && checkMouseX(j)) || checkPos(j)){
+          fill(128,0,255,255);
+          if(checkPos(j)){
+            printInfo(j);
+          }
+        }
+      } else if(champions.getRow(i).getString(1).equals("ADC")){
+        fill(255,200,50,128);
+        if((inBounds() && checkMouseX(j)) || checkPos(j)){
+          fill(255,200,50,255);
+          if(checkPos(j)){
+            printInfo(j);
+          }
+        }
+      } else if(champions.getRow(i).getString(1).equals("Support")){
+        fill(0,255,0,128);
+        if((inBounds() && checkMouseX(j)) || checkPos(j)){
+          fill(0,255,0,255);
+          if(checkPos(j)){
+            printInfo(j);
+          }
         }
       }
-    } else if(champions.getRow(i).getString(1).equals("Jungle")){
-      fill(0,0,255,128);
-      if((mouseX>85 && checkMouseX(i)) || checkPos(i)){
-        fill(0,0,255,255);
-        if(checkPos(i)){
-          printInfo(i);
-        }
+      //if((int)checkbox.getArrayValue()[i] == 1){
+        rect(x,(640-((champions.getRow(i).getFloat(2) - 35)*20)),
+            (915/totalDisplay)-2, ((champions.getRow(i).getFloat(2) - 35)*20));
+        x+=(915/totalDisplay);
       }
-    } else if(champions.getRow(i).getString(1).equals("Middle")){
-      fill(128,0,255,128);
-      if((mouseX>85 && checkMouseX(i)) || checkPos(i)){
-        fill(128,0,255,255);
-        if(checkPos(i)){
-          printInfo(i);
-        }
-      }
-    } else if(champions.getRow(i).getString(1).equals("ADC")){
-      fill(255,200,50,128);
-      if((mouseX>85 && checkMouseX(i)) || checkPos(i)){
-        fill(255,200,50,255);
-        if(checkPos(i)){
-          printInfo(i);
-        }
-      }
-    } else if(champions.getRow(i).getString(1).equals("Support")){
-      fill(0,255,0,128);
-      if((mouseX>85 && checkMouseX(i)) || checkPos(i)){
-        fill(0,255,0,255);
-        if(checkPos(i)){
-          printInfo(i);
-        }
-      }
-    }
-    rect(x,(640-((champions.getRow(i).getFloat(2) - 35)*20)),
-          (1000/champions.getRowCount())-2, ((champions.getRow(i).getFloat(2) - 35)*20));
-    x+=(1000/champions.getRowCount());
+    //}
+    selected.clear();
   }
   
   stroke(0);
@@ -104,33 +125,34 @@ void draw() {
 
 void mouseClicked(){
   pos = mouseX;
+  if(pos > 915){
+    pos = 0;
+  }
 }
 
 void printInfo(int i){
-  text(champions.getRow(i).getString(1) + " " + champions.getRow(i).getString(0) + 
-               ": " + champions.getRow(i).getFloat(2) + "% Win rate", 550, 90);
+  int k = selected.get(i);
+  text(champions.getRow(k).getString(1) + " " + champions.getRow(k).getString(0) + 
+               ": " + champions.getRow(k).getFloat(2) + "% Win rate", 550, 90);
+}
+
+boolean inBounds(){
+  return mouseX>85 && mouseX<915;
 }
 
 boolean checkMouseX(int i){
-  return (mouseX>((i*915/champions.getRowCount())+85) && mouseX<(((i+1)*915/champions.getRowCount())+85));
+  return (mouseX>((i*(915/totalDisplay))+85) && mouseX<(((i+1)*(915/totalDisplay))+85));
 }
 
 boolean checkPos(int i){
-  return (pos>((i*915/champions.getRowCount())+85) && pos<(((i+1)*915/champions.getRowCount())+85));
+  return (pos>((i*(915/totalDisplay))+85) && pos<(((i+1)*(915/totalDisplay))+85));
 }
 
 void controlEvent(ControlEvent theEvent) {
   if (theEvent.isFrom(checkbox)) {
-    print("got an event from "+checkbox.getName()+"\t\n");
-    // checkbox uses arrayValue to store the state of 
-    // individual checkbox-items. usage:
-    println(checkbox.getArrayValue());
-    int col = 0;
     for (int i=0;i<checkbox.getArrayValue().length;i++) {
       int n = (int)checkbox.getArrayValue()[i];
-      print(n);
-    }
-    println();      
+    }    
   }
 }
 
