@@ -10,6 +10,10 @@ ControlP5 cp5;
 CheckBox checkbox;
 
 Button clear, top, jungle, middle, adc, support, all;
+float kills = 0, deaths = 0, assists = 0, kda = 0;
+float rkills = 0, rdeaths = 0, rassists = 0, rkda = 0;
+int gold = 0, damage = 0;
+int rgold = 0, rdamage = 0;
 
 void setup() {
   size(1500, 900);
@@ -30,7 +34,20 @@ void setup() {
       
   for(int i=0; i<champions.getRowCount(); i++){
     checkbox.addItem(champions.getRow(i).getString(0) + " ("+champions.getRow(i).getString(1) + ")", i);
+    kills += champions.getRow(i).getFloat(5);
+    deaths += champions.getRow(i).getFloat(6);
+    assists += champions.getRow(i).getFloat(7);
+    kda += champions.getRow(i).getFloat(8);
+    gold += champions.getRow(i).getInt(16);
+    damage += champions.getRow(i).getInt(9);
   }
+  
+  kills = kills/champions.getRowCount();
+  deaths = deaths/champions.getRowCount();
+  assists = assists/champions.getRowCount();
+  kda = kda/champions.getRowCount();
+  gold = gold/champions.getRowCount();
+  damage = damage/champions.getRowCount();
   
   clear = cp5.addButton("Clear")
              .setPosition(1050,720)
@@ -73,16 +90,36 @@ void draw() {
   fill(0);
   textSize(16);
   text("65%", 40, 80);
-  text("50%", 40, 340);
-  text("35%", 40, 640);
+  text("50%", 40, 310);
+  text("35%", 40, 540);
   textSize(32);
-  textAlign(CENTER);
+  
+  textSize(20);
+  textAlign(LEFT);
+  text("Kills", 235, 600);
+  text("Deaths", 320, 600);
+  text("Assists", 420, 600);
+  text("KDA", 520, 600);
+  text("Gold", 600, 600);
+  text("Damage Dealt", 700, 600);
+  
+  text("Total Average", 47, 650);
+  text(kills, 230, 650);
+  text(deaths, 320, 650);
+  text(assists, 415, 650);
+  text(kda, 510, 650);
+  text(gold, 600, 650);
+  text(damage, 700, 650);
+  
+  text("Role Average", 56, 700);
+  text("Champ Average", 30, 750);
   
   stroke(128);
   strokeWeight(3);
-  line(80, 340, 1000, 340);
-  line(80, 190, 1000, 190);
-  line(80, 490, 1000, 490);
+  line(80, 80, 1000, 80);
+  line(80, 310, 1000, 310);
+  line(80, 195, 1000, 195);
+  line(80, 425, 1000, 425);
   
   totalDisplay = 0;
   for(int i=0;i<checkbox.getArrayValue().length;i++) {
@@ -113,7 +150,6 @@ void draw() {
       } else if(champions.getRow(i).getString(1).equals("Jungle")){
         fill(128,0,255,128);
         if((inBounds() && checkMouseX(j)) || checkPos(j)){
-          fill(0,0,255,255);
           fill(128,0,255,255);
           if(checkPos(j)){
             printInfo(j);
@@ -144,8 +180,8 @@ void draw() {
           }
         }
       }
-      rect(x,(640-((champions.getRow(i).getFloat(2) - 35)*20)),
-          (915/totalDisplay)-2, ((champions.getRow(i).getFloat(2) - 35)*20));
+      rect(x,(540-((champions.getRow(i).getFloat(2) - 35)*15)),
+          (915/totalDisplay)-2, ((champions.getRow(i).getFloat(2) - 35)*15));
       x+=(915/totalDisplay);
       }
     selected.clear();
@@ -153,8 +189,8 @@ void draw() {
   
   stroke(0);
   strokeWeight(5);
-  line(80, 40, 80, 640);
-  line(80, 640, 1000, 640);
+  line(80, 40, 80, 540);
+  line(80, 540, 1000, 540);
   
   
 }
@@ -167,9 +203,55 @@ void mousePressed(){
 }
 
 void printInfo(int i){
+  textAlign(CENTER);
   int k = selected.get(i);
   text(champions.getRow(k).getString(1) + " " + champions.getRow(k).getString(0) + 
-               ": " + champions.getRow(k).getFloat(2) + "% Win rate", 550, 90);
+               ": " + champions.getRow(k).getFloat(2) + "% Win rate", 550, 45);
+  textAlign(LEFT);
+  
+  rkills = 0;
+  rdeaths = 0;
+  rassists = 0;
+  rkda = 0;
+  rgold = 0;
+  rdamage = 0;
+  
+  int r = 0;
+  
+  for(int j=0; j<champions.getRowCount(); j++){
+    if(champions.getRow(j).getString(1).equals(champions.getRow(j).getString(1))){
+      rkills += champions.getRow(j).getFloat(5);
+      rdeaths += champions.getRow(j).getFloat(6);
+      rassists += champions.getRow(j).getFloat(7);
+      rkda += champions.getRow(j).getFloat(8);
+      rgold += champions.getRow(j).getInt(16);
+      rdamage += champions.getRow(j).getInt(9);
+      r++;
+    }
+  }
+  
+  if(r!=0){
+    rkills = rkills/r;
+    rdeaths = rdeaths/r;
+    rassists = rassists/r;
+     rkda = rkda/r;
+    rgold = rgold/r;
+    rdamage = rdamage/r;
+  }
+  
+  text(rkills, 230, 700);
+  text(rdeaths, 320, 700);
+  text(rassists, 415, 700);
+  text(rkda, 510, 700);
+  text(rgold, 600, 700);
+  text(rdamage, 700, 700);
+  
+  text(champions.getRow(i).getFloat(5), 230, 750);
+  text(champions.getRow(i).getFloat(6), 320, 750);
+  text(champions.getRow(i).getFloat(7), 415, 750);
+  text(champions.getRow(i).getFloat(8), 510, 750);
+  text(champions.getRow(i).getInt(16), 600, 750);
+  text(champions.getRow(i).getInt(9), 700, 750);
 }
 
 boolean inBounds(){
