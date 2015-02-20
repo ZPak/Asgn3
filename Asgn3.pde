@@ -16,7 +16,7 @@ int gold = 0, damage = 0;
 int rgold = 0, rdamage = 0;
 
 void setup() {
-  size(1500, 900);
+  size(1500, 800);
   
   champions = loadTable("champions.csv", "header");
   
@@ -141,6 +141,11 @@ void draw() {
       int i = selected.get(j);
       if(champions.getRow(i).getString(1).equals("Top")){
         fill(255,0,0,128);
+        if((inBounds() && checkMouseX(j))){
+          textAlign(CENTER);
+          text(champions.getRow(i).getString(1) + " " + champions.getRow(i).getString(0), 550, 120);
+          textAlign(LEFT);
+        }
         if((inBounds() && checkMouseX(j)) || checkPos(j)){
           fill(255,0,0,255);
           if(checkPos(j)){
@@ -149,6 +154,11 @@ void draw() {
         }
       } else if(champions.getRow(i).getString(1).equals("Jungle")){
         fill(128,0,255,128);
+        if((inBounds() && checkMouseX(j))){
+          textAlign(CENTER);
+          text(champions.getRow(i).getString(1) + " " + champions.getRow(i).getString(0), 550, 120);
+          textAlign(LEFT);
+        }
         if((inBounds() && checkMouseX(j)) || checkPos(j)){
           fill(128,0,255,255);
           if(checkPos(j)){
@@ -157,6 +167,11 @@ void draw() {
         }
       } else if(champions.getRow(i).getString(1).equals("Middle")){
         fill(0,0,255,128);
+        if((inBounds() && checkMouseX(j))){
+          textAlign(CENTER);
+          text(champions.getRow(i).getString(1) + " " + champions.getRow(i).getString(0), 550, 120);
+          textAlign(LEFT);
+        }
         if((inBounds() && checkMouseX(j)) || checkPos(j)){
           fill(0,0,255,255);
           if(checkPos(j)){
@@ -165,6 +180,11 @@ void draw() {
         }
       } else if(champions.getRow(i).getString(1).equals("ADC")){
         fill(255,150,20,128);
+        if((inBounds() && checkMouseX(j))){
+          textAlign(CENTER);
+          text(champions.getRow(i).getString(1) + " " + champions.getRow(i).getString(0), 550, 120);
+          textAlign(LEFT);
+        }
         if((inBounds() && checkMouseX(j)) || checkPos(j)){
           fill(255,150,20,255);
           if(checkPos(j)){
@@ -173,6 +193,11 @@ void draw() {
         }
       } else if(champions.getRow(i).getString(1).equals("Support")){
         fill(0,255,0,128);
+        if((inBounds() && checkMouseX(j))){
+          textAlign(CENTER);
+          text(champions.getRow(i).getString(1) + " " + champions.getRow(i).getString(0), 550, 120);
+          textAlign(LEFT);
+        }
         if((inBounds() && checkMouseX(j)) || checkPos(j)){
           fill(0,255,0,255);
           if(checkPos(j)){
@@ -219,7 +244,7 @@ void printInfo(int i){
   int r = 0;
   
   for(int j=0; j<champions.getRowCount(); j++){
-    if(champions.getRow(j).getString(1).equals(champions.getRow(j).getString(1))){
+    if(champions.getRow(j).getString(1).equals(champions.getRow(k).getString(1))){
       rkills += champions.getRow(j).getFloat(5);
       rdeaths += champions.getRow(j).getFloat(6);
       rassists += champions.getRow(j).getFloat(7);
